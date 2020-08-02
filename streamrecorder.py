@@ -11,7 +11,7 @@ def read_logbook_status_wannabe_daemon(stop):
             rec_mdb.read_logbook_change()
             if stop():
                 break
-            time.sleep(10)
+            time.sleep(2)
     else:
         return
 

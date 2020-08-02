@@ -4,15 +4,16 @@ import math
 import minimalmodbus
 from datetime import datetime
 
+
 try:
-    global uvcGenV
     uvcGenV = minimalmodbus.Instrument('COM6', 1)  # port name, slave address (in decimal)
     uvcGenV.serial.baudrate = 19200  # Baud
     uvcGenV.serial.parity = minimalmodbus.serial.PARITY_EVEN
     uvcGenV.serial.timeout = 0.05  # seconds
     uvcGenV.clear_buffers_before_each_transaction = False
     uvcGenV.close_port_after_each_call = False
-except uvcGenV.serial.SerialException as e:
+
+except minimalmodbus.serial.serialutil.SerialException as e:
     config.comm_err = True
     print(e)
 
@@ -22,7 +23,7 @@ def read_logbook_change():
         Read Modbus register 32; check if logbook has been changed since last download
         :return:
     """
-    if not config.download_active:
+    if not config.download_active and not config.comm_err:
         try:
             logbook_reg = uvcGenV.read_registers(32, 1)
             if logbook_reg[0] == 1:
